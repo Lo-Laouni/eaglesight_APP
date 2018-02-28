@@ -21,11 +21,8 @@ import java.util.concurrent.BrokenBarrierException;
  */
 
 public class deviceData {
-    //read contacts
-    //read call logs
-    //read sms
     //track location
-    //read phone state
+
     Context mContext;
     TelephonyManager tmanager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
     WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
